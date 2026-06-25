@@ -7,13 +7,22 @@ public class player : MonoBehaviour
     public float speed = 10f;
     public float gravity = -20f;
     public float jumpHeight = 3f;
+    private int boxCount = 0;
 
+    public GameObject clearText;
+    public UIManager uiManager;
+
+    public GameObject exitObject;
     private CharacterController controller;
     private float velocityY;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+
+        controller = GetComponent<CharacterController>();
+
+        uiManager.UpdateBoxText(0);
     }
 
     void Update()
@@ -45,5 +54,30 @@ public class player : MonoBehaviour
         move.y = velocityY;
 
         controller.Move(move * Time.deltaTime);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Box"))
+        {
+            boxCount++;
+
+            uiManager.UpdateBoxText(boxCount);
+
+            Destroy(other.gameObject);
+
+            if (boxCount >= 4)
+            {
+                exitObject.SetActive(true);
+
+                Debug.Log("출구가 열렸습니다!");
+            }
+        }
+
+        if (other.CompareTag("Exit"))
+        {
+            clearText.SetActive(true);
+
+            Debug.Log("CLEAR!");
+        }
     }
 }
